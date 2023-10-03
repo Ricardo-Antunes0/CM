@@ -1,6 +1,7 @@
 package com.example.homework2
 
 import android.Manifest
+import android.app.ListActivity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -46,11 +47,11 @@ import com.example.homework2.ui.theme.Homework2Theme
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Icon
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.content.ContextCompat.startActivity
-
 
 
 class MainActivity : ComponentActivity() {
@@ -164,12 +165,24 @@ fun dialer(activity: ComponentActivity) {
         ) {
             DialerButton(text = "Não Faz Nada", onClick = {})
 
+            val context = LocalContext.current
+            val CALL_PHONE_PERMISSION_REQUEST_CODE = 123
+
             Button(
                 onClick = {
                     if (phoneNumber.isNotEmpty()) {
-                        val dialUri = "tel:$phoneNumber"
-                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse(dialUri))
-                        //startActivity(intent)
+                        val dialUri = Uri.parse("tel:$phoneNumber")
+                        val callIntent = Intent(Intent.ACTION_CALL, dialUri)
+
+                        // Check for CALL_PHONE permission
+                        val permission = Manifest.permission.CALL_PHONE
+                        val granted = ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+
+                        if (granted) {
+                            context.startActivity(callIntent)
+                        } else {
+                            ActivityCompat.requestPermissions(activity, arrayOf(permission), CALL_PHONE_PERMISSION_REQUEST_CODE)
+                        }
                     }
                 },
                 modifier = Modifier.size(64.dp),
@@ -198,6 +211,9 @@ fun dialer(activity: ComponentActivity) {
         }
     }
 }
+
+
+
 
 @Composable
 fun DialerButton(text: String, onClick: () -> Unit) {

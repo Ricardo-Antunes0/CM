@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        call.setOnClickListener { makePhoneCall() }
+        call.seClictOnkListener { makePhoneCall() }
     }
         private fun makePhoneCall() {
             val number = textview.text.toString()
