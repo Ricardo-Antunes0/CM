@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_CALL, Uri.parse(dial))
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                returnx
+                return
             }
             else
                 startActivity(intent)
